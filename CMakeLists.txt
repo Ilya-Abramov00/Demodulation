@@ -5,6 +5,7 @@ project(Demodulation)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(UNITTEST ON)
+enable_testing()
 
 file(GLOB SRC include/${PROJECT_NAME}/*.h )
 add_library(${PROJECT_NAME} INTERFACE ${SRC})
