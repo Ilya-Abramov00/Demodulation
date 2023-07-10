@@ -1,3 +1,6 @@
 [submodule "libs/Base"]
 	path = libs/Base
 	url = https://github.com/DenisovMaxim/Base.git
+[submodule "libs/googletest"]
+	path = libs/googletest
+	url = https://github.com/google/googletest.git
