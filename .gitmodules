@@ -1,6 +1,3 @@
-[submodule "Base"]
-	path = Base
-	url = https://github.com/DenisovMaxim/Base.git
 [submodule "libs/Base"]
 	path = libs/Base
 	url = https://github.com/DenisovMaxim/Base.git
