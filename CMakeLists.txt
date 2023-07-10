@@ -7,13 +7,15 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(UNITTEST ON)
 enable_testing()
 
+add_compile_options(-Wall -Wextra -Wpedantic -Werror)
+
 file(GLOB SRC include/${PROJECT_NAME}/*.h )
 add_library(${PROJECT_NAME} INTERFACE ${SRC})
 
 target_include_directories(${PROJECT_NAME} INTERFACE include/)
 
 add_subdirectory(libs/Base)
-add_subdirectory(libs/googletests)
+add_subdirectory(libs/googletest)
 target_link_libraries(${PROJECT_NAME} INTERFACE Base)
 
 include("unittest.cmake")
