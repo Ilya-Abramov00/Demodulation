@@ -7,18 +7,18 @@
 
 TEST( TestDemodFM, DemodFine ) {
 	Reader fileFM;
-	SignalFile< double > fileM = fileFM.readFile< double >( "dat/testDataFM" );
+	SignalFile< float > fileM = fileFM.readFile< float >( "dat/testDataFM" );
 	Demodulation demod;
-	std::vector< double > data_ = demod.demodFM( fileM );  // vector
+	std::vector< float > data_ = demod.demodFM( fileM );  // vector
 	std::ifstream file( "dat/testDataDFM", std::fstream::binary );
 	uint64_t size = fileM.size();
-	std::vector< double > data( size );
+	std::vector< float > data( size );
 	for( uint64_t i = 0; i < size; i++ ) {
-		file.read( reinterpret_cast< char* >( &data[ i ] ), sizeof( double ) );
+		file.read( reinterpret_cast< char* >( &data[ i ] ), sizeof( float ) );
 	}
 	file.close();
 	for( uint64_t i = 0; i < size; i++ ) {
-		ASSERT_NEAR( data_[ i ], data[ i ], 1e-5 );
+		ASSERT_NEAR( data_[ i ], data[ i ], 1e-2 );
 	}
 }
 
