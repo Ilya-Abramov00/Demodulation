@@ -28,7 +28,7 @@ std::vector< Type > Demodulation::demodAM( SignalFile< Type > const& sigFile ) {
 	for( uint64_t i = 0; i < size; i++ ) {
 		data[ i ] = sigFile.data( i ).abs() - 1;
 	}
-	return std::move( data );
+    return data;
 }
 
 template < typename Type >
@@ -49,7 +49,7 @@ std::vector< Type > Demodulation::demodFM( SignalFile< Type > const& sigFile ) {
 
 	}
 	data[ size - 1 ] = 0;
-	return std::move( data );
+    return data;
 }
 
 #endif // DEMOD_H
