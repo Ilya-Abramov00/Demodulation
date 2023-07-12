@@ -1,10 +1,11 @@
 #ifndef DEMOD_H
 #define DEMOD_H
 #include <vector>
-#include "../../libs/Base/include/Base/signalFile.h"
+#include "../../libs/Base/include/Base/moveFreq.h"
 #include "../../libs/Base/include/Base/complex.h"
 #define _USE_MATH_DEFINES
 #include <cmath>
+#include <vector>
 
 class Demodulation {
 
@@ -15,41 +16,38 @@ public:
 	 * @return dftuygubni
 	 */
 	template < typename Type >
-	std::vector< Type > demodAM( SignalFile< Type > const& sigFile );
+	std::vector< Type > demodAM( std::vector< Complex< Type > > const& mData );
 	template < typename Type >
-	std::vector< Type > demodFM( SignalFile< Type > const& sigFile );
+	std::vector< Type > demodFM( std::vector< Complex< Type > > const& mData );
 private:
 };
 
 template < typename Type >
-std::vector< Type > Demodulation::demodAM( SignalFile< Type > const& sigFile ) {
-	uint64_t size = sigFile.size();
+std::vector< Type > Demodulation::demodAM( std::vector< Complex< Type > > const& mData ) {
+	uint64_t size = mData.size();
 	std::vector< Type > data( size );
 	for( uint64_t i = 0; i < size; i++ ) {
-		data[ i ] = sigFile.data( i ).abs() - 1;
+		data[ i ] = mData[ i ].abs() - 1;
 	}
-    return data;
+	return data;
 }
 
 template < typename Type >
-std::vector< Type > Demodulation::demodFM( SignalFile< Type > const& sigFile ) {
-	uint64_t size = sigFile.size();
-	uint64_t fCen = sigFile.freqCenter();
-	uint32_t fSam = sigFile.freqSample();
+std::vector< Type > Demodulation::demodFM( std::vector< Complex< Type > > const& mData ) {
+	uint64_t size = mData.size();
 	std::vector< Type > data( size );
 	for( uint64_t i = 0; i < size; i++ ) {
-		data[ i ] = sigFile.data( i ).arg();
+		data[ i ] = mData[ i ].arg();
 	}
-
-	for( uint64_t i = 0; i < size - 1; i++ ) {
-		Type dif = ( data[ i + 1 ] - data[ i ] ) * 0.5 * M_1_PI;
+	data[ 0 ] = data[ 0 ] * 0.5 * M_1_PI;
+	Type temp = data[ 0 ];
+	for( uint64_t i = 1; i < size; i++ ) {
+		Type dif = ( data[ i ] - temp ) * 0.5 * M_1_PI;
 		if( dif > 0.5 ) dif--;
 		if( dif < -0.5 ) dif++;
-		data[ i ] = dif * fSam - fCen;
-
+		temp = data[ i ];
+		data[ i ] = dif;
 	}
-	data[ size - 1 ] = 0;
-    return data;
+	return data;
 }
-
 #endif // DEMOD_H
