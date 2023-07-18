@@ -1,6 +1,5 @@
 #include <gtest/gtest.h>
 #include "../include/Demodulation/fftw.h"
-#include "../libs/Base/include/Base/writer.h"
 #include <vector>
 #include <fstream>
 
@@ -12,17 +11,18 @@ TEST( TestFftw, fftwForwardFine ) {
 	std::vector< Complex< float > > data_( N );
 	std::vector< Complex< float > > data( N );
 
-	std::ifstream file( "dat/testDataFftwF", std::fstream::binary );
+	std::ifstream fileIn( "dat/testDataFftwFin", std::fstream::binary );
 	for( uint64_t i = 0; i < N; i++ ) {
-		file.read( reinterpret_cast< char* >( &data_[ i ].re() ), sizeof( float ) );
-		file.read( reinterpret_cast< char* >( &data_[ i ].im() ), sizeof( float ) );
+		fileIn.read( reinterpret_cast< char* >( &data_[ i ].re() ), sizeof( float ) );
+		fileIn.read( reinterpret_cast< char* >( &data_[ i ].im() ), sizeof( float ) );
 	}
+	fileIn.close();
+	std::ifstream fileOut( "dat/testDataFftwFout", std::fstream::binary );
 	for( uint64_t i = 0; i < N; i++ ) {
-		file.read( reinterpret_cast< char* >( &data[ i ].re() ), sizeof( float ) );
-		file.read( reinterpret_cast< char* >( &data[ i ].im() ), sizeof( float ) );
+		fileOut.read( reinterpret_cast< char* >( &data[ i ].re() ), sizeof( float ) );
+		fileOut.read( reinterpret_cast< char* >( &data[ i ].im() ), sizeof( float ) );
 	}
-
-	file.close();
+	fileOut.close();
 
 	data_ = fftw.Forward< float >( data_ );
 
@@ -39,31 +39,20 @@ TEST( TestFftw, fftwBackwardFine ) {
 	std::vector< Complex< float > > data_( N );
 	std::vector< Complex< float > > data( N );
 
-	std::ifstream file( "dat/testDataFftwB", std::fstream::binary );
+	std::ifstream fileIn( "dat/testDataFftwBin", std::fstream::binary );
 	for( uint64_t i = 0; i < N; i++ ) {
-		file.read( reinterpret_cast< char* >( &data_[ i ].re() ), sizeof( float ) );
-		file.read( reinterpret_cast< char* >( &data_[ i ].im() ), sizeof( float ) );
+		fileIn.read( reinterpret_cast< char* >( &data_[ i ].re() ), sizeof( float ) );
+		fileIn.read( reinterpret_cast< char* >( &data_[ i ].im() ), sizeof( float ) );
 	}
+	fileIn.close();
+	std::ifstream fileOut( "dat/testDataFftwBout", std::fstream::binary );
 	for( uint64_t i = 0; i < N; i++ ) {
-		file.read( reinterpret_cast< char* >( &data[ i ].re() ), sizeof( float ) );
-		file.read( reinterpret_cast< char* >( &data[ i ].im() ), sizeof( float ) );
+		fileOut.read( reinterpret_cast< char* >( &data[ i ].re() ), sizeof( float ) );
+		fileOut.read( reinterpret_cast< char* >( &data[ i ].im() ), sizeof( float ) );
 	}
-
-	file.close();
+	fileOut.close();
 
 	data_ = fftw.Backward< float >( data_ );
-
-	Writer Write;
-
-	std::vector< float > newVec( 2 * N );
-	for( uint64_t i = 0; i < N; i++ ) {
-		newVec[ 2 * i ] = data_[ i ].re();
-		newVec[ 2 * i + 1 ] = data_[ i ].im();
-	}
-
-	Write.writeFile< float >( "/home/maksim/work/w_ml/testing.mp3", newVec, 1 );
-
-
 
 	for( uint64_t i = 0; i < N; i++ ) {
 		ASSERT_NEAR( data_[ i ].re(), data[ i ].re(), 1e-4 );
