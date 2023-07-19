@@ -81,7 +81,7 @@ TEST( TestFilter, filterC0 ) {
 	data_ = filter.Filt( data_, fileIn.freqSample(), fileIn.freqCenter(), Fw );
 
 	for( uint64_t i = 0; i < N; i++ ) {
-		if( data_[ i ].re() != data[ i ].re() ) std::cout << i << std::endl;
+		// if( data_[ i ].re() != data[ i ].re() ) std::cout << i << std::endl;
 		ASSERT_NEAR( data_[ i ].re(), data[ i ].re(), 1e-4 );
 		ASSERT_NEAR( data_[ i ].im(), data[ i ].im(), 1e-4 );
 	}
