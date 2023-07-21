@@ -21,7 +21,7 @@ TEST( TestNoise, WNFine ) {
 		avr += ( data_[ i ].abs() * data_[ i ].abs() );
 	}
 	avr /= N;
-	ASSERT_NEAR( avr, W, W * 1e-2 );
+	ASSERT_NEAR( avr, pow( 10, W / 10 ), pow( 10, W / 10 ) * 1e-2 );
 
 	Writer write;
 	std::vector< float > vec( 2 * N );
