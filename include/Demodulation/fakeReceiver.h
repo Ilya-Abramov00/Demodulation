@@ -27,7 +27,7 @@ public:
 
 	FakeReceiver( noiseParams NP, std::vector< sinParams > SnP, signalParams SgP );
 	template < typename Type >
-	std::vector< Complex< Type > > GenSignal();
+	std::vector< Base::Complex< Type > > GenSignal();
 private:
 };
 
@@ -35,12 +35,12 @@ FakeReceiver::FakeReceiver( noiseParams NP, std::vector< sinParams > SnP, signal
 }
 
 template < typename Type >
-std::vector< Complex< Type > > FakeReceiver::GenSignal() {
+std::vector< Base::Complex< Type > > FakeReceiver::GenSignal() {
 	GenNoise WNGen;
 	Generator_sin SnGen;
-	std::vector< Complex< Type > > data = WNGen.GenWN< Type >( m_noiseP.W, m_signalP.size );
+	std::vector< Base::Complex< Type > > data = WNGen.GenWN< Type >( m_noiseP.W, m_signalP.size );
 	for( uint32_t i = 0; i < m_sinesP.size(); i++ ) {
-		std::vector< Complex< Type > > dataSin = SnGen.gen_sin< Type >( m_sinesP[ i ].amp, m_sinesP[ i ].freq, m_signalP.fd,  m_signalP.size );
+		std::vector< Base::Complex< Type > > dataSin = SnGen.gen_sin< Type >( m_sinesP[ i ].amp, m_sinesP[ i ].freq, m_signalP.fd,  m_signalP.size );
 		for( uint64_t j = 0; j < m_signalP.size; j++ ) {
 			data[ j ] += dataSin[ j ];
 		}

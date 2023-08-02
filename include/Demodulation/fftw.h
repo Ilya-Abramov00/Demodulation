@@ -9,50 +9,44 @@
 class Fftw {
 public:
 	template < typename Type >
-	std::vector< Complex< Type > > Forward( std::vector< Complex< Type > > data );
+	void Forward( Base::Complex< Type >* dataIn, Base::Complex< Type >* dataOut, uint32_t N );
 	template < typename Type >
-	std::vector< Complex< Type > > Backward( std::vector< Complex< Type > > data );
+	void Backward( Base::Complex< Type >* dataIn, Base::Complex< Type >* dataOut, uint32_t N );
 private:
 };
 
 template < typename Type >
-std::vector< Complex< Type > > Fftw::Forward( std::vector< Complex< Type > > data ) {
-	uint64_t N = data.size();
-	fftw_complex* in, * out;
+void Fftw::Forward( Base::Complex< Type >* dataIn, Base::Complex< Type >* dataOut, uint32_t N ) {
+	fftw_complex* data;
 	fftw_plan p;
-	in = ( fftw_complex* )fftw_malloc( sizeof( fftw_complex ) * N );
-	out = ( fftw_complex* )fftw_malloc( sizeof( fftw_complex ) * N );
+	data = ( fftw_complex* )fftw_malloc( sizeof( fftw_complex ) * N );
 	for( uint64_t i = 0; i < N; i++ ) {
-		in[ i ][ 0 ] = data[ i ].re();
-		in[ i ][ 1 ] = data[ i ].im();
+		data[ i ][ 0 ] = dataIn[ i ].re();
+		data[ i ][ 1 ] = dataIn[ i ].im();
 	}
-	p = fftw_plan_dft_1d( N, in, out, FFTW_FORWARD, FFTW_ESTIMATE );
+	p = fftw_plan_dft_1d( N, data, data, FFTW_FORWARD, FFTW_ESTIMATE );
 	fftw_execute( p );
 	for( uint64_t i = 0; i < N; i++ ) {
-		data[ i ].re() = out[ i ][ 0 ];
-		data[ i ].im() = out[ i ][ 1 ];
+		dataOut[ i ].re() = data[ i ][ 0 ];
+		dataOut[ i ].im() = data[ i ][ 1 ];
 	}
-	return data;
 }
 
 template < typename Type >
-std::vector< Complex< Type > > Fftw::Backward( std::vector< Complex< Type > > data ) {
-	uint64_t N = data.size();
-	fftw_complex* in, * out;
+void Fftw::Backward( Base::Complex< Type >* dataIn, Base::Complex< Type >* dataOut, uint32_t N ) {
+	fftw_complex* data;
 	fftw_plan p;
-	in = ( fftw_complex* )fftw_malloc( sizeof( fftw_complex ) * N );
-	out = ( fftw_complex* )fftw_malloc( sizeof( fftw_complex ) * N );
+	data = ( fftw_complex* )fftw_malloc( sizeof( fftw_complex ) * N );
 	for( uint64_t i = 0; i < N; i++ ) {
-		in[ i ][ 0 ] = data[ i ].re();
-		in[ i ][ 1 ] = data[ i ].im();
+		data[ i ][ 0 ] = dataIn[ i ].re();
+		data[ i ][ 1 ] = dataIn[ i ].im();
 	}
-	p = fftw_plan_dft_1d( N, in, out, FFTW_BACKWARD, FFTW_ESTIMATE );
+	p = fftw_plan_dft_1d( N, data, data, FFTW_BACKWARD, FFTW_ESTIMATE );
 	fftw_execute( p );
 	for( uint64_t i = 0; i < N; i++ ) {
-		data[ i ].re() = out[ i ][ 0 ] / N;
-		data[ i ].im() = out[ i ][ 1 ] / N;
+		dataOut[ i ].re() = data[ i ][ 0 ] / N;
+		dataOut[ i ].im() = data[ i ][ 1 ] / N;
 	}
-	return data;
 }
 
 #endif
