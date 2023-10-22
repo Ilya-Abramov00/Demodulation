@@ -5,6 +5,7 @@
 #include <vector>
 #include <fstream>
 
+using namespace Base;
 
 TEST( TestDemodFM, DemodFine ) {
 	Reader fileFM;

@@ -3,6 +3,7 @@
 #include <vector>
 #include <fstream>
 
+using namespace Base;
 
 TEST( TestFftw, fftwForwardFine ) {
 	Fftw fftw;
@@ -24,7 +25,7 @@ TEST( TestFftw, fftwForwardFine ) {
 	}
 	fileOut.close();
 
-	data_ = fftw.Forward< float >( data_ );
+    fftw.Forward< float >( data_.data(), data_.data(), data_.size());
 
 	for( uint64_t i = 0; i < N; i++ ) {
 		ASSERT_NEAR( data_[ i ].re(), data[ i ].re(), 1e-4 );
@@ -52,7 +53,7 @@ TEST( TestFftw, fftwBackwardFine ) {
 	}
 	fileOut.close();
 
-	data_ = fftw.Backward< float >( data_ );
+    fftw.Backward< float >( data_.data(), data_.data(), data_.size());
 
 	for( uint64_t i = 0; i < N; i++ ) {
 		ASSERT_NEAR( data_[ i ].re(), data[ i ].re(), 1e-4 );

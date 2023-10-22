@@ -5,6 +5,8 @@
 #include <cmath>
 #include <fstream>
 
+using namespace Base;
+
 TEST( sin_test, output_values ) {
 
     std::ifstream file( "dat/test_val_sin", std::ifstream::binary );

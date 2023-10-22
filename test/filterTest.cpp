@@ -5,6 +5,7 @@
 #include <vector>
 #include <fstream>
 
+using namespace Base;
 
 TEST( TestFilter, filterFine ) {
 	Reader readFile;
@@ -25,7 +26,7 @@ TEST( TestFilter, filterFine ) {
 	}
 	fileOut.close();
 
-	data_ = filter.Filt( data_, fileIn.freqSample(), fileIn.freqCenter(), Fw );
+    filter.Filt( data_.data(), data_.data(), data_.size(), fileIn.freqSample(), fileIn.freqCenter(), Fw );
 
 	Writer write;
 	std::vector< float > vec( 2 * N );
@@ -54,7 +55,7 @@ TEST( TestFilter, filterVec1 ) {
 
 	std::vector< Complex< float > > data( N );
 
-	data_ = filter.Filt( data_, Fs, Fc, Fw );
+    filter.Filt( data_.data(), data_.data(), data_.size(), Fs, Fc, Fw );
 
 	ASSERT_EQ( data_[ 0 ].re(), 0 );
 }
@@ -78,7 +79,7 @@ TEST( TestFilter, filterC0 ) {
 	}
 	fileOut.close();
 
-	data_ = filter.Filt( data_, fileIn.freqSample(), fileIn.freqCenter(), Fw );
+    filter.Filt( data_.data(), data_.data(), data_.size(), fileIn.freqSample(), fileIn.freqCenter(), Fw );
 
 	for( uint64_t i = 0; i < N; i++ ) {
 		// if( data_[ i ].re() != data[ i ].re() ) std::cout << i << std::endl;
@@ -99,7 +100,7 @@ TEST( TestFilter, filterW0 ) {
 		data_[ i ] = fileIn.data( i );
 	}
 
-	data_ = filter.Filt( data_, fileIn.freqSample(), fileIn.freqCenter(), Fw );
+    filter.Filt( data_.data(), data_.data(), data_.size(), fileIn.freqSample(), fileIn.freqCenter(), Fw );
 
 	for( uint64_t i = 0; i < N; i++ ) {
 		ASSERT_EQ( data_[ i ].re(), 0 );

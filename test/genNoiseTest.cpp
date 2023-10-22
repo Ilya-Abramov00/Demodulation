@@ -5,6 +5,7 @@
 #include <vector>
 #include <fstream>
 
+using namespace Base;
 
 TEST( TestNoise, WNFine ) {
 	Fftw fftw;
@@ -14,7 +15,7 @@ TEST( TestNoise, WNFine ) {
 
 	std::vector< Complex< float > > data_ = GenN.GenWN< float >( W, N );
 
-	data_ = fftw.Forward< float >( data_ );
+    fftw.Forward< float >( data_.data(), data_.data(), data_.size());
 
 	float avr = 0;
 	for( uint64_t i = 0; i < N; i++ ) {

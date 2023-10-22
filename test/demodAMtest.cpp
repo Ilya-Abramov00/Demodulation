@@ -5,6 +5,8 @@
 #include <vector>
 #include <fstream>
 
+using namespace Base;
+
 TEST( demodAM_test, output_values ) {
 
 	Reader reader;

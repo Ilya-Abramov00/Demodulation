@@ -4,6 +4,8 @@
 #include <vector>
 #include <fstream>
 
+using namespace Base;
+
 TEST( resample_test, output_values ) {
 
 
