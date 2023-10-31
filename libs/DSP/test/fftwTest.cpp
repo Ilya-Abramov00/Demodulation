@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "../include/Demodulation/fftw.h"
+#include "../include/DSP/fftw.h"
 #include <vector>
 #include <fstream>
 

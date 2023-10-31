@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
-#include "../include/Demodulation/filter.h"
-#include "../libs/Base/include/Base/reader.h"
-#include "../libs/Base/include/Base/writer.h"
+#include "../include/DSP/filter.h"
+#include "../../Base/include/Base/reader.h"
+#include "../../Base/include/Base/writer.h"
 #include <vector>
 #include <fstream>
 

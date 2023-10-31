@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
-#include "../include/Demodulation/resample.h"
-#include "../libs/Base/include/Base/reader.h"
+#include "../include/DSP/resample.h"
+#include "../../Base/include/Base/reader.h"
 #include <vector>
 #include <fstream>
 

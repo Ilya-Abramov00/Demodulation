@@ -1,11 +1,11 @@
 #include <iostream>
 #include <cmath>
 #include "rtl-sdr.h"
-#include "receiverwrapper.h"
+#include "libs/RTL-SDR-Receiver/include/receiver/receiverwrapper.h" //изменил адрес
 #include "include/Demodulation/demod.h"
-#include "include/Demodulation/filter.h"
-#include "include/Demodulation/resample.h"
-#include "include/Demodulation/fakeReceiver.h"
+#include "libs/DSP/include/DSP/filter.h"
+#include "libs/DSP/include/DSP/resample.h"
+//#include "include/Demodulation/fakeReceiver.h"
 
 #include "libs/Base/include/Base/writeWAV.h"
 #include "libs/Base/include/Base/complex.h"
@@ -50,7 +50,7 @@ uint32_t getNumArg( char* exArg ) {
 void processing( uint32_t Fc, uint32_t Fw, uint32_t time ) {
 	// инициализируем всё - приёмник, частоту дискретизации, находим из размера пакетов и входного времени количество пакетов
 	std::string recName( "hw" );
-	auto recImpl = ReceiverWrapper::getReceiverByName( recName );
+    auto recImpl = ReceiverWrapper::getReceiverByName( recName );
 	uint32_t Fs = ( uint32_t )2.4e6;
 	uint64_t fullSampleCount = Fs * time;
 	uint32_t packetSize = ( uint32_t )1024 * 1024 * 4;// !!!!!!!!!размер пакета должен быть степенью двойки
@@ -63,7 +63,7 @@ void processing( uint32_t Fc, uint32_t Fw, uint32_t time ) {
 	Resample resam;
 	Demodulation demod;
 	Base::WriteWAV writeSig;
-	Base::MoveFreq movFreq;
+    //Base::MoveFreq movFreq;
 	// тут мы инициализируем буфферы для хранения пакетов и их обработки, и вектор где хранится итоговая дорожка
 	std::vector< Complex< uint8_t > >  packet( packetSize );
 	std::vector< Base::Complex< float > >  packetFloat( packetSize );
@@ -78,11 +78,11 @@ void processing( uint32_t Fc, uint32_t Fw, uint32_t time ) {
 
 	std::cout << 48000 * time - Signal.size() << std::endl;
 	// тут открывается тестовый файл
-	std::ifstream file( "/home/maksim/work/w_qt/Demodulation/Dest/signalFM_fd_500000.iqf", std::fstream::binary ); ////////////////
+    //std::ifstream file( "/home/maksim/work/w_qt/Demodulation/Dest/signalFM_fd_500000.iqf", std::fstream::binary ); ////////////////
 	// основной цикл работы
 	for( uint32_t i = 0; i < cycleCount; i++ ) {
 		std::cerr << "iter: " << i << std::endl;
-		recImpl->getComplex( RecSet, packet );// получаем пакет данных
+        recImpl->getComplex( RecSet, packet );// получаем пакет данных
 		uint32_t N = packet.size();// выясняем его размер, можно удалить и замень в соответствующих местах
 		std::cout << "packetSize: " << N << std::endl;
 		// передвигаем данные из массива uint8 в массив float
@@ -102,7 +102,7 @@ void processing( uint32_t Fc, uint32_t Fw, uint32_t time ) {
 
 ///
 
-		movFreq.ToZero( packetFloat.data(), packetFloat.data(), N, Fs, Fc );// сдвигаем сигнал по частоте на 0
+        //movFreq.ToZero( packetFloat.data(), packetFloat.data(), N, Fs, Fc );// сдвигаем сигнал по частоте на 0
 		std::cout << "Fww: " << 1.2 * Fw  << std::endl;
 		filt.Filt< float >( packetFloat.data(), packetFloat.data(), N, Fs, 0, 1.2 * Fw );// фильтруем наш сигнал
 		std::cout << "old: " << Fs << '\t' << "new: " << 3.6 * Fw << std::endl;
@@ -121,7 +121,7 @@ void processing( uint32_t Fc, uint32_t Fw, uint32_t time ) {
 		}
 	}
 
-	file.close(); ///////////////
+    //file.close(); ///////////////
 	// пишем wav файл
-	writeSig.writeSignal( "/home/maksim/work/w_qt/Demodulation/Dest/signal.wav", Signal );
+    writeSig.writeSignal( "/home/anatoly/work/workC++/Demodulation/Dest/signal.wav", Signal );
 }
