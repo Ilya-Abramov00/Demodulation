@@ -87,8 +87,8 @@ void processing( uint32_t Fc, uint32_t Fw, uint32_t time ) {
 		std::cout << "packetSize: " << N << std::endl;
 		// передвигаем данные из массива uint8 в массив float
 		for( uint32_t j = 0; j < N; j++ ) {
-			packetFloat[ j ].re() = ( float )packet[ j ].real();
-			packetFloat[ j ].im() = ( float )packet[ j ].imag();
+            packetFloat[ j ].re = ( float )packet[ j ].real();
+            packetFloat[ j ].im = ( float )packet[ j ].imag();
 		}
 
 		// Fs = 500000; ////////////////тестовые данные

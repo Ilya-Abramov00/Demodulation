@@ -28,8 +28,8 @@ void Filter::Filt( Base::Complex< Type >* dataIn, Base::Complex< Type >* dataOut
 	std::cout << "Fww: " << Fw  << std::endl;
 	if( Fw >= Fs ) {
 		for( uint32_t i = 0; i < N; i++ ) {
-			dataOut[ i ].re() = dataIn[ i ].re();
-			dataOut[ i ].im() = dataIn[ i ].im();
+            dataOut[ i ].re = dataIn[ i ].re;
+            dataOut[ i ].im = dataIn[ i ].im;
 		}
 	}
 	Fftw fft;
@@ -43,17 +43,17 @@ void Filter::Filt( Base::Complex< Type >* dataIn, Base::Complex< Type >* dataOut
 	if( Fw < Fs ) {
 		if( fh < fl ) {
 			for( uint64_t i = fh; i < fl + 1; i++ ) {
-				dataOut[ i ].re() = 0;
-				dataOut[ i ].im() = 0;
+                dataOut[ i ].re = 0;
+                dataOut[ i ].im = 0;
 			}
 		} else {
 			for( uint64_t i = 0; i < fl + 1; i++ ) {
-				dataOut[ i ].re() = 0;
-				dataOut[ i ].im() = 0;
+                dataOut[ i ].re = 0;
+                dataOut[ i ].im = 0;
 			}
 			for( uint64_t i = fh; i < N; i++ ) {
-				dataOut[ i ].re() = 0;
-				dataOut[ i ].im() = 0;
+                dataOut[ i ].re = 0;
+                dataOut[ i ].im = 0;
 			}
 		}
 	}

@@ -1,12 +1,14 @@
 #pragma once
 
-#include "complex.h"
+#include "Base/complex.h"
 #include "fftw3.h"
 #include <vector>
 #include <algorithm>
 
 const int REAL=0;
 const int IMAG=1;
+
+using namespace Base;
 
 //void fft(fftw_complex *in, fftw_complex *out,int N);
 void fft(std::vector<Complex<double>> &in, std::vector<Complex<double>> &out,int N);

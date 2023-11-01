@@ -21,14 +21,14 @@ void Fftw::Forward( Base::Complex< Type >* dataIn, Base::Complex< Type >* dataOu
 	fftw_plan p;
 	data = ( fftw_complex* )fftw_malloc( sizeof( fftw_complex ) * N );
 	for( uint64_t i = 0; i < N; i++ ) {
-		data[ i ][ 0 ] = dataIn[ i ].re();
-		data[ i ][ 1 ] = dataIn[ i ].im();
+        data[ i ][ 0 ] = dataIn[ i ].re;
+        data[ i ][ 1 ] = dataIn[ i ].im;
 	}
 	p = fftw_plan_dft_1d( N, data, data, FFTW_FORWARD, FFTW_ESTIMATE );
 	fftw_execute( p );
 	for( uint64_t i = 0; i < N; i++ ) {
-		dataOut[ i ].re() = data[ i ][ 0 ];
-		dataOut[ i ].im() = data[ i ][ 1 ];
+        dataOut[ i ].re = data[ i ][ 0 ];
+        dataOut[ i ].im = data[ i ][ 1 ];
 	}
 }
 
@@ -38,14 +38,14 @@ void Fftw::Backward( Base::Complex< Type >* dataIn, Base::Complex< Type >* dataO
 	fftw_plan p;
 	data = ( fftw_complex* )fftw_malloc( sizeof( fftw_complex ) * N );
 	for( uint64_t i = 0; i < N; i++ ) {
-		data[ i ][ 0 ] = dataIn[ i ].re();
-		data[ i ][ 1 ] = dataIn[ i ].im();
+        data[ i ][ 0 ] = dataIn[ i ].re;
+        data[ i ][ 1 ] = dataIn[ i ].im;
 	}
 	p = fftw_plan_dft_1d( N, data, data, FFTW_BACKWARD, FFTW_ESTIMATE );
 	fftw_execute( p );
 	for( uint64_t i = 0; i < N; i++ ) {
-		dataOut[ i ].re() = data[ i ][ 0 ] / N;
-		dataOut[ i ].im() = data[ i ][ 1 ] / N;
+        dataOut[ i ].re = data[ i ][ 0 ] / N;
+        dataOut[ i ].im = data[ i ][ 1 ] / N;
 	}
 }
 
