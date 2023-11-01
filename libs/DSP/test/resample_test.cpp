@@ -50,8 +50,8 @@ TEST( resample_test, output_Cmplx_values ) {
     std::vector< Complex< float > > vec3( 1000 );
 
     for( uint32_t i = 0; i < 1000; i++ ) {
-        file.read( reinterpret_cast< char* >( &( vec3[ i ].re() ) ), sizeof( float ) );
-        file.read( reinterpret_cast< char* >( &( vec3[ i ].im() ) ), sizeof( float ) );
+        file.read( reinterpret_cast< char* >( &( vec3[ i ].re ) ), sizeof( float ) );
+        file.read( reinterpret_cast< char* >( &( vec3[ i ].im ) ), sizeof( float ) );
     }
     file.close();
 
@@ -64,8 +64,8 @@ TEST( resample_test, output_Cmplx_values ) {
     std::vector< Complex< float > > vec4( 100 ); // example
 
     for( uint32_t i = 0; i < 100; i++ ) {
-        file2.read( reinterpret_cast< char* >( &( vec4[ i ].re() ) ), sizeof( float ) );
-        file2.read( reinterpret_cast< char* >( &( vec4[ i ].im() ) ), sizeof( float ) );
+        file2.read( reinterpret_cast< char* >( &( vec4[ i ].re ) ), sizeof( float ) );
+        file2.read( reinterpret_cast< char* >( &( vec4[ i ].im ) ), sizeof( float ) );
     }
     file2.close();
 
@@ -76,8 +76,8 @@ TEST( resample_test, output_Cmplx_values ) {
     std::vector< Complex< float > > data = test_obj.resampled( vec3, freqOLD, freqNEW ); //
     // freqOLD = 1;
     for( uint64_t i = 0; i < 100; ++i ) {
-        ASSERT_EQ( data[ i ].re(), vec4[ i ].re() );
-        ASSERT_EQ( data[ i ].im(), vec4[ i ].im() );
+        ASSERT_EQ( data[ i ].re, vec4[ i ].re );
+        ASSERT_EQ( data[ i ].im, vec4[ i ].im );
 
     }
 }
@@ -115,8 +115,8 @@ TEST( resample_test, correct_fd_cmplx ) {
     std::vector< Complex< float > > vec2( 100 ); // example
 
     for( uint32_t i = 0; i < 100; i++ ) {
-        file2.read( reinterpret_cast< char* >( &( vec2[ i ].re() ) ), sizeof( float ) );
-        file2.read( reinterpret_cast< char* >( &( vec2[ i ].im() ) ), sizeof( float ) );
+        file2.read( reinterpret_cast< char* >( &( vec2[ i ].re ) ), sizeof( float ) );
+        file2.read( reinterpret_cast< char* >( &( vec2[ i ].im ) ), sizeof( float ) );
     }
     file2.close();
     Resample test_obj2;
@@ -197,8 +197,8 @@ TEST( resample_test, fdOLD_cmplx ) {
     std::vector< Complex< float > > vec2( 100 ); // example
 
     for( uint32_t i = 0; i < 100; i++ ) {
-        file2.read( reinterpret_cast< char* >( &( vec2[ i ].re() ) ), sizeof( float ) );
-        file2.read( reinterpret_cast< char* >( &( vec2[ i ].im() ) ), sizeof( float ) );
+        file2.read( reinterpret_cast< char* >( &( vec2[ i ].re ) ), sizeof( float ) );
+        file2.read( reinterpret_cast< char* >( &( vec2[ i ].im ) ), sizeof( float ) );
     }
     file2.close();
     Resample test_obj2;
@@ -225,8 +225,8 @@ TEST( resample_test, fdNEW_cmplx ) {
     std::vector< Complex< float > > vec2( 100 ); // example
 
     for( uint32_t i = 0; i < 100; i++ ) {
-        file2.read( reinterpret_cast< char* >( &( vec2[ i ].re() ) ), sizeof( float ) );
-        file2.read( reinterpret_cast< char* >( &( vec2[ i ].im() ) ), sizeof( float ) );
+        file2.read( reinterpret_cast< char* >( &( vec2[ i ].re ) ), sizeof( float ) );
+        file2.read( reinterpret_cast< char* >( &( vec2[ i ].im ) ), sizeof( float ) );
     }
     file2.close();
     Resample test_obj2;
