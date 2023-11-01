@@ -9,7 +9,7 @@ file(GLOB SRC source/*.cpp include/${PROJECT_NAME}/*.h )
 
 add_library(${PROJECT_NAME} SHARED ${SRC})
 
-target_link_libraries(${PROJECT_NAME} PUBLIC fftw3)
+target_link_libraries(${PROJECT_NAME} PUBLIC fftw3 Base)
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 if (CMAKE_BUILD_TYPE STREQUAL Debug)
