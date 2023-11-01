@@ -17,20 +17,20 @@ if(UNITTEST)
 endif()
 
 add_subdirectory(libs/Base)
-add_subdirectory(libs/RTL-SDR-Receiver)
 add_subdirectory(libs/DSP)
+add_subdirectory(libs/RTL-SDR-Receiver)
 
 file(GLOB SRC include/${PROJECT_NAME}/*.h)
 
 if (CMAKE_BUILD_TYPE STREQUAL Release)
     add_executable(${PROJECT_NAME} ${SRC} main.cpp)
-    target_link_libraries(${PROJECT_NAME} INTERFACE Base)
+    target_link_libraries(${PROJECT_NAME} INTERFACE Base DSP)
     target_link_libraries(${PROJECT_NAME} PUBLIC receiver)
 endif()
 
 if (CMAKE_BUILD_TYPE STREQUAL Debug)
     add_library(${PROJECT_NAME} INTERFACE ${SRC})
-    target_link_libraries(${PROJECT_NAME} INTERFACE Base receiver)
+    target_link_libraries(${PROJECT_NAME} INTERFACE Base receiver DSP)
     include("unittest.cmake")
 endif()
 
