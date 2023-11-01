@@ -1,12 +1,12 @@
 #include <gtest/gtest.h>
-#include "../include/DSP/fftw.h"
+#include "../include/DSP/fft.h"
 #include <vector>
 #include <fstream>
 
 using namespace Base;
 
 TEST( TestFftw, fftwForwardFine ) {
-	Fftw fftw;
+    Fftw fftw;
 	uint64_t N = 2000;
 
 	std::vector< Complex< float > > data_( N );
