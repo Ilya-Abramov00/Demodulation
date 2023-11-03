@@ -58,10 +58,11 @@ void processing( uint32_t Fc, uint32_t Fw, uint32_t time ) {
 	// задаём настройки приёмника
 	RfSettings RfSet = { Fc, Fs, 496, 0, 1 };
     //ReceiverSettings RecSet = { RfSet, packetSize, 0 }; //наследование не позволяет использовать такой конструктор
-    ReceiverSettings RecSet; //задал иным способом
-    RecSet.rfSettings = RfSet;
-    RecSet.sampleCount = packetSize;
-    RecSet.n_read = 0;
+    ReceiverSettings RecSet_1; //задал иным способом
+    RecSet_1.rfSettings = RfSet;
+    RecSet_1.sampleCount = packetSize;
+    RecSet_1.n_read = 0;
+    ReceiverSettings* RecSet = &RecSet_1; // с использованием указателя для передачи в обновленную getComplex
 	// создаём объекты обработки
 	Filter filt;
 	Resample resam;
