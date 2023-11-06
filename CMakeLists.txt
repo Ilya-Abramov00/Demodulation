@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(Demodulation)
+project(demodulation)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -22,19 +22,13 @@ add_subdirectory(libs/RTL-SDR-Receiver)
 
 file(GLOB SRC include/${PROJECT_NAME}/*.h)
 
-if (CMAKE_BUILD_TYPE STREQUAL Release)
-    add_executable(${PROJECT_NAME} ${SRC} main.cpp)
-    target_link_libraries(${PROJECT_NAME} INTERFACE Base DSP)
-    target_link_libraries(${PROJECT_NAME} PUBLIC receiver)
-endif()
-
-if (CMAKE_BUILD_TYPE STREQUAL Debug)
-    add_library(${PROJECT_NAME} INTERFACE ${SRC})
-    target_link_libraries(${PROJECT_NAME} INTERFACE Base receiver DSP)
-    include("unittest.cmake")
-endif()
-
+add_library(${PROJECT_NAME} INTERFACE ${SRC})
+target_link_libraries(${PROJECT_NAME} INTERFACE base receiver dsp)
 target_include_directories(${PROJECT_NAME} INTERFACE include/)
 
+include("unittest.cmake")
 
+add_executable(Demodulator main.cpp)
+target_link_libraries(Demodulator INTERFACE base demodulation)
+target_link_libraries(Demodulator PUBLIC receiver dsp)
 
