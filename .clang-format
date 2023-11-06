@@ -1,0 +1,65 @@
+---
+BasedOnStyle: WebKit
+AccessModifierOffset: -4
+AlignAfterOpenBracket: Align
+AlignConsecutiveAssignments: 'true'
+AlignConsecutiveDeclarations: 'false'
+AlignEscapedNewlines: Right
+AlignTrailingComments: 'true'
+AllowAllArgumentsOnNextLine: 'true'
+AllowAllConstructorInitializersOnNextLine: 'true'
+AllowAllParametersOfDeclarationOnNextLine: 'true'
+AllowShortBlocksOnASingleLine: 'Empty'
+AllowShortCaseLabelsOnASingleLine: 'false'
+AllowShortFunctionsOnASingleLine: Empty
+AllowShortIfStatementsOnASingleLine: Never
+AllowShortLambdasOnASingleLine: Inline
+AllowShortLoopsOnASingleLine: 'false'
+AlwaysBreakAfterReturnType: None
+AlwaysBreakBeforeMultilineStrings: 'false'
+AlwaysBreakTemplateDeclarations: 'Yes'
+BinPackArguments: 'true'
+BinPackParameters: 'true'
+BreakBeforeBraces: Attach
+BreakBeforeTernaryOperators: 'false'
+BreakConstructorInitializers: AfterColon
+ColumnLimit: '121'
+CompactNamespaces: 'false'
+ConstructorInitializerAllOnOneLineOrOnePerLine: 'false'
+Cpp11BracedListStyle: 'true'
+DisableFormat: 'false'
+FixNamespaceComments: 'true'
+IncludeBlocks: Regroup
+IncludeCategories:
+  - Regex: '^"(llvm|llvm-c|clang|clang-c)/'
+    Priority: 2
+  - Regex: '^(<|"(gtest|gmock|isl|json)/)'
+    Priority: 3
+  - Regex: '<[[:alnum:].]+>'
+    Priority: 4
+  - Regex: '.*'
+    Priority: 1
+IndentCaseLabels: 'true'
+IndentPPDirectives: AfterHash
+KeepEmptyLinesAtTheStartOfBlocks: 'false'
+Language: Cpp
+MaxEmptyLinesToKeep: '1'
+NamespaceIndentation: All
+PointerAlignment: Left
+ReflowComments: 'true'
+SpaceAfterCStyleCast: 'false'
+SpaceAfterLogicalNot: 'false'
+SpaceAfterTemplateKeyword: 'false'
+SpaceBeforeAssignmentOperators: 'true'
+SpaceBeforeCpp11BracedList: 'false'
+SpaceBeforeCtorInitializerColon: 'true'
+SpaceBeforeParens: Never
+SpaceBeforeRangeBasedForLoopColon: 'true'
+SpaceInEmptyParentheses: 'false'
+SpacesInAngles: 'false'
+SpacesInCStyleCastParentheses: 'false'
+SpacesInContainerLiterals: 'false'
+SpacesInParentheses: 'false'
+SpacesInSquareBrackets: 'false'
+IndentAccessModifiers: 'false'
+Standard: Auto
