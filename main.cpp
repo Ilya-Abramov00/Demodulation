@@ -1,7 +1,7 @@
 #include <iostream>
 #include <cmath>
 #include "rtl-sdr.h"
-#include "receiver/receiverwrapper.h"
+#include "receiver/receiverfactory.h"
 #include "demodulation/demod.h"
 #include "dsp/filter.h"
 #include "dsp/resample.h"
@@ -48,7 +48,7 @@ uint32_t getNumArg( char* exArg ) {
 void processing( uint32_t Fc, uint32_t Fw, uint32_t time ) {
 	// инициализируем всё - приёмник, частоту дискретизации, находим из размера пакетов и входного времени количество пакетов
 	std::string recName( "hw" );
-    auto recImpl = ReceiverWrapper::getReceiverByName( recName );
+    auto recImpl = ReceiverFactory::getReceiverByName( recName );
 	uint32_t Fs = ( uint32_t )2.4e6;
 	uint64_t fullSampleCount = Fs * time;
 	uint32_t packetSize = ( uint32_t )1024 * 1024 * 4;// !!!!!!!!!размер пакета должен быть степенью двойки
