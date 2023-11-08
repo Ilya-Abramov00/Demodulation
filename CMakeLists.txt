@@ -17,18 +17,19 @@ if(UNITTEST)
 endif()
 
 add_subdirectory(libs/Base)
-add_subdirectory(libs/DSP)
+add_subdirectory(libs/dsp)
 add_subdirectory(libs/RTL-SDR-Receiver)
 
 file(GLOB SRC include/${PROJECT_NAME}/*.h)
 
 add_library(${PROJECT_NAME} INTERFACE ${SRC})
 target_link_libraries(${PROJECT_NAME} INTERFACE base receiver dsp)
-target_include_directories(${PROJECT_NAME} INTERFACE include/)
+
+target_include_directories(${PROJECT_NAME} INTERFACE libs/RTL-SDR-Receiver/include)
+target_include_directories(${PROJECT_NAME} INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 include("unittest.cmake")
 
 add_executable(Demodulator main.cpp)
-target_link_libraries(Demodulator INTERFACE base demodulation)
-target_link_libraries(Demodulator PUBLIC receiver dsp)
+target_link_libraries(Demodulator PUBLIC receiver dsp base demodulation)
 

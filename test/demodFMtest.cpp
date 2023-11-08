@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
-#include "../include/Demodulation/demod.h"
-#include "../libs/Base/include/Base/reader.h"
-#include "../libs/Base/include/Base/moveFreq.h"
+#include "demodulation/demod.h"
+#include "base/reader.h"
+#include "base/moveFreq.h"
 #include <vector>
 #include <fstream>
 

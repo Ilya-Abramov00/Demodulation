@@ -1,8 +1,8 @@
 #ifndef DEMOD_H
 #define DEMOD_H
 #include <vector>
-#include "../../libs/Base/include/Base/moveFreq.h"
-#include "../../libs/Base/include/Base/complex.h"
+#include "base/moveFreq.h"
+#include "base/complex.h"
 #define _USE_MATH_DEFINES
 #include <cmath>
 #include <vector>

@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "../include/DSP/fft.h"
+#include "dsp/fft.h"
 #include <vector>
 #include <fstream>
 

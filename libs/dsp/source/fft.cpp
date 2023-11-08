@@ -1,4 +1,4 @@
-#include "DSP/fft.h"
+#include "dsp/fft.h"
 
 
 //Функция для прямого преобразовния Фурье

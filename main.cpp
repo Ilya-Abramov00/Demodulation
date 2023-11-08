@@ -1,15 +1,13 @@
 #include <iostream>
 #include <cmath>
 #include "rtl-sdr.h"
-#include "libs/RTL-SDR-Receiver/include/receiver/receiverwrapper.h" //изменил адрес
-#include "include/Demodulation/demod.h"
-#include "libs/DSP/include/DSP/filter.h"
-#include "libs/DSP/include/DSP/resample.h"
-//#include "include/Demodulation/fakeReceiver.h"
-
-#include "libs/Base/include/Base/writeWAV.h"
-#include "libs/Base/include/Base/complex.h"
-#include "libs/Base/include/Base/moveFreq.h"
+#include "receiver/receiverwrapper.h"
+#include "demodulation/demod.h"
+#include "dsp/filter.h"
+#include "dsp/resample.h"
+#include "base/writeWAV.h"
+#include "base/complex.h"
+#include "base/moveFreq.h"
 
 uint32_t getNumArg( char* exArg );                          // эта функция преобразует С-строку в число, так как входные аргументы передаются в виде массива строк
 void processing( uint32_t Fc, uint32_t Fw, uint32_t time ); // эта функция делает всю работу
