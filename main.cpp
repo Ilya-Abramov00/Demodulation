@@ -47,16 +47,16 @@ uint32_t getNumArg( char* exArg ) {
 
 void processing( uint32_t Fc, uint32_t Fw, uint32_t time ) {
 	// инициализируем всё - приёмник, частоту дискретизации, находим из размера пакетов и входного времени количество пакетов
-	std::string recName( "hw" );
-    auto recImpl = ReceiverFactory::getReceiverByName( recName );
+    ReceiverFactory::ReceiverParams params{ ReceiverFactory::ReceiverParams::ReceiverType::hw, 1024 };
+    auto recImpl = ReceiverFactory::create( params );
 	uint32_t Fs = ( uint32_t )2.4e6;
 	uint64_t fullSampleCount = Fs * time;
 	uint32_t packetSize = ( uint32_t )1024 * 1024 * 4;// !!!!!!!!!размер пакета должен быть степенью двойки
 	uint64_t cycleCount = fullSampleCount / packetSize;
 	// задаём настройки приёмника
 	RfSettings RfSet = { Fc, Fs, 496, 0, 1 };
-    //ReceiverSettings RecSet = { RfSet, packetSize, 0 }; //наследование не позволяет использовать такой конструктор
-    ReceiverSettings RecSet_1; //задал иным способом
+    // ReceiverSettings RecSet = { RfSet, packetSize, 0 }; //наследование не позволяет использовать такой конструктор
+    ReceiverSettings RecSet_1; // задал иным способом
     RecSet_1.rfSettings = RfSet;
     RecSet_1.sampleCount = packetSize;
     RecSet_1.n_read = 0;
@@ -66,7 +66,7 @@ void processing( uint32_t Fc, uint32_t Fw, uint32_t time ) {
 	Resample resam;
 	Demodulation demod;
 	Base::WriteWAV writeSig;
-    //Base::MoveFreq movFreq;
+    // Base::MoveFreq movFreq;
 	// тут мы инициализируем буфферы для хранения пакетов и их обработки, и вектор где хранится итоговая дорожка
 	std::vector< Complex< uint8_t > >  packet( packetSize );
 	std::vector< Base::Complex< float > >  packetFloat( packetSize );
@@ -81,7 +81,7 @@ void processing( uint32_t Fc, uint32_t Fw, uint32_t time ) {
 
 	std::cout << 48000 * time - Signal.size() << std::endl;
 	// тут открывается тестовый файл
-    //std::ifstream file( "/home/maksim/work/w_qt/Demodulation/Dest/signalFM_fd_500000.iqf", std::fstream::binary ); ////////////////
+    // std::ifstream file( "/home/maksim/work/w_qt/Demodulation/Dest/signalFM_fd_500000.iqf", std::fstream::binary ); ////////////////
 	// основной цикл работы
 	for( uint32_t i = 0; i < cycleCount; i++ ) {
 		std::cerr << "iter: " << i << std::endl;
@@ -105,7 +105,7 @@ void processing( uint32_t Fc, uint32_t Fw, uint32_t time ) {
 
 ///
 
-        //movFreq.ToZero( packetFloat.data(), packetFloat.data(), N, Fs, Fc );// сдвигаем сигнал по частоте на 0
+        // movFreq.ToZero( packetFloat.data(), packetFloat.data(), N, Fs, Fc );// сдвигаем сигнал по частоте на 0
 		std::cout << "Fww: " << 1.2 * Fw  << std::endl;
 		filt.Filt< float >( packetFloat.data(), packetFloat.data(), N, Fs, 0, 1.2 * Fw );// фильтруем наш сигнал
 		std::cout << "old: " << Fs << '\t' << "new: " << 3.6 * Fw << std::endl;
@@ -124,7 +124,7 @@ void processing( uint32_t Fc, uint32_t Fw, uint32_t time ) {
 		}
 	}
 
-    //file.close(); ///////////////
+    // file.close(); ///////////////
 	// пишем wav файл
     writeSig.writeSignal( "/home/anatoly/work/workC++/Demodulation/Dest/signal.wav", Signal );
 }
