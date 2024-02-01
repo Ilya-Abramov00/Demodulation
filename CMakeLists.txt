@@ -16,7 +16,7 @@ endif()
 
 add_subdirectory(libs/Base)
 add_subdirectory(libs/dsp)
-add_subdirectory(libs/RTL-SDR-Receivers)
+add_subdirectory(libs/RTL-SDR-Receiver1)
 
 file(GLOB SRC include/${PROJECT_NAME}/*.h)
 
