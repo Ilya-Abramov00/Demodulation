@@ -4,6 +4,7 @@
 #include "fftw3.h"
 #include <vector>
 #include <algorithm>
+#include <cstdint>
 
 const int REAL=0;
 const int IMAG=1;
