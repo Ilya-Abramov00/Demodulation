@@ -4,6 +4,9 @@
 [submodule "libs/googletest"]
 	path = libs/googletest
 	url = git@github.com:google/googletest.git
-[submodule "libs/RTL-SDR-Receiver1"]
-	path = libs/RTL-SDR-Receiver1
+[submodule "libs/rtl-sdr"]
+	path = libs/rtl-sdr
+	url = git@github.com:Ilya-Abramov00/rtl-sdr.git
+[submodule "libs/receiver"]
+	path = libs/receiver
 	url = git@github.com:Ilya-Abramov00/Receiver.git

@@ -14,16 +14,17 @@ if(UNITTEST)
     add_subdirectory(libs/googletest)
 endif()
 
+add_subdirectory(libs/rtl-sdr)
 add_subdirectory(libs/Base)
 add_subdirectory(libs/dsp)
-add_subdirectory(libs/RTL-SDR-Receiver1)
+add_subdirectory(libs/receiver)
 
 file(GLOB SRC include/${PROJECT_NAME}/*.h)
 
 add_library(${PROJECT_NAME} INTERFACE ${SRC})
 target_link_libraries(${PROJECT_NAME} INTERFACE base receiver dsp)
 
-target_include_directories(${PROJECT_NAME} INTERFACE libs/RTL-SDR-Receivers/include)
+target_include_directories(${PROJECT_NAME} INTERFACE libs/receiver/include)
 target_include_directories(${PROJECT_NAME} INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 add_executable(Demodulator main.cpp)
