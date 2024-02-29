@@ -10,3 +10,6 @@
 [submodule "libs/receiver"]
 	path = libs/receiver
 	url = git@github.com:Ilya-Abramov00/Receiver.git
+[submodule "libs/platform_SDR"]
+	path = libs/platform_SDR
+	url = git@github.com:Ilya-Abramov00/platform_SDR.git
