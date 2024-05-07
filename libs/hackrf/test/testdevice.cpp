@@ -1,6 +1,7 @@
 #include "hackrf/dev.h"
 #include "hackrf/receiver.h"
 #include "hackrf/transfercontrol.h"
+#include "hackrf/utils.h"
 
 #include <cmath>
 #include <fstream>
@@ -13,6 +14,8 @@ public:
 };
 
 TEST_F(HACKRFDeviceTest, Device_creating) {
+    ASSERT_EQ(1, deviceHackRfSearch());
+
     HackRFDevice dev(0);
     auto _dev = dev.getDev();
 

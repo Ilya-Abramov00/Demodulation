@@ -64,10 +64,10 @@ void HackRFReceiver::setSampleRate(uint32_t sample_rate) {
         exit(-1);
     }
 }
-void HackRFReceiver::setBasebandFilterBandwidth(float hz) {
-    auto standart = getBandwidth(hz);
-    if(standart != hz) {
-        std::cerr << __FUNCTION__ << " set " << standart << " Hz" << std::endl;
+void HackRFReceiver::setBasebandFilterBandwidth(uint32_t hz) {
+    auto bandwidth = getBandwidth(hz);
+    if(bandwidth != hz) {
+        std::cerr << __FUNCTION__ << " set " << bandwidth << " Hz" << std::endl;
     }
     auto rc = static_cast<hackrf_error>(hackrf_set_baseband_filter_bandwidth(dev, hz));
 

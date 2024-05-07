@@ -5,7 +5,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 file(GLOB SRC include/${PROJECT_NAME}/*.h source/*.cpp)
 
-add_library(${PROJECT_NAME} STATIC ${SRC})
+add_library(${PROJECT_NAME} STATIC ${SRC}
+        include/hackrf/utils.h)
 
 target_link_libraries(${PROJECT_NAME} PUBLIC hackrfAPI platform_SDR )
 

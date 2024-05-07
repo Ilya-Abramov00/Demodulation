@@ -18,18 +18,19 @@ public:
 
     void setCallBack(Handler f);
     void setTransferParams(TransferParams setting);
+
 private:
-    void check();
-    void run();
+    bool flagStop();
+
+    std::size_t counter{0};
+    std::size_t packetCount{1};
+
     hackrf_device* dev{nullptr};
 
-    hackrf_sample_block_cb_fn callback;
+    hackrf_sample_block_cb_fn callback{nullptr};
     Handler process;
 
     std::atomic_bool needProcessing{false};
 
     TransferParams params;
-
-    std::mutex startWaitMutex;
-    std::condition_variable startWaiter;
 };

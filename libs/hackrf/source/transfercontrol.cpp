@@ -28,41 +28,24 @@ HackRFTransferControl::HackRFTransferControl(hackrf_device* _dev) {
     dev = _dev;
 }
 void HackRFTransferControl::start() {
-    check();
-    startWaitMutex.lock();
-    run();
-    // while(!needProcessing)
-    // startWaiter.wait(&std::unique_lock<std::mutex>(startWaitMutex, 100);
+    if(!process) {
+        printf("callback no set");
+        exit(-1);
+    }
 
-    startWaitMutex.unlock();
-}
+    if(needProcessing) {
+        printf("Failed to Start RX. Stream already running.");
+        exit(-1);
+    }
 
-void HackRFTransferControl::run() {
-    check();
     needProcessing = true;
 
     auto rc = static_cast<hackrf_error>(hackrf_start_rx(dev, this->callback, this));
 
     if(rc != HACKRF_SUCCESS) {
-        std::cerr << "Failed to start TX streaming: error " << (int)rc << " " << hackrf_error_name(rc);
+        std::cerr << "Failed to start RX streaming: error " << (int)rc << " " << hackrf_error_name(rc);
         hackrf_close(dev);
         exit(-1);
-    }
-
-    startWaiter.notify_all();
-
-    if(hackrf_is_streaming(dev) == HACKRF_TRUE) {
-        std::cerr << "HackRFInputThread::run: HackRF is streaming already" << std::endl;
-    } else {
-        std::cerr << "HackRFInputThread::run: HackRF is not streaming" << std ::endl;
-
-        auto rc = static_cast<hackrf_error>(hackrf_start_rx(dev, this->callback, this));
-
-        if(rc == HACKRF_SUCCESS) {
-            std::cout << "HackRFOutputThread::run: started HackRF Rx" << std::endl;
-        } else {
-            std::cerr << "HackRFOutputThread::run: failed to start HackRF Rx: " << hackrf_error_name(rc) << std::endl;
-        }
     }
 
     while((needProcessing) && (hackrf_is_streaming(dev) == HACKRF_TRUE)) {
@@ -73,19 +56,32 @@ void HackRFTransferControl::run() {
         rc = static_cast<hackrf_error>(hackrf_stop_rx(dev));
 
         if(rc == HACKRF_SUCCESS) {
-            std::cout << "HackRFOutputThread::run: stopped HackRF Rx" << std::endl;
+            std::cout << "stopped HackRF RX" << std::endl;
         } else {
-            std::cerr << "HackRFOutputThread::run: failed to stop HackRF Rx: " << hackrf_error_name(rc) << std::endl;
+            std::cerr << "failed to stop HackRF RX: " << hackrf_error_name(rc) << std::endl;
         }
     }
-
-    needProcessing = false;
+}
+bool HackRFTransferControl::flagStop() {
+    if(!needProcessing) {
+        return true;
+    }
+    if(params.typeTransaction == TypeTransaction::loop) {
+        return false;
+    }
+    counter++;
+    if(counter == packetCount) {
+        return true;
+    }
+    return false;
 }
 
 void HackRFTransferControl::stop() {
-    std::cout << "HackRFOutputThread::stopWork" << std::endl;
     needProcessing = false;
-    // startWaiter.wait(startWaitMutex);
+}
+
+void HackRFTransferControl::setTransferParams(TransferParams setting) {
+    params = setting;
 }
 
 void HackRFTransferControl::setCallBack(Handler f) {
@@ -93,28 +89,9 @@ void HackRFTransferControl::setCallBack(Handler f) {
 
     callback = [](hackrf_transfer* transfer) -> int {
         auto* obj = static_cast<HackRFTransferControl*>(transfer->rx_ctx);
+
         obj->process(transfer->buffer, transfer->valid_length);
 
-        if(obj->params.typeTransaction == TypeTransaction::single) {
-            return 1;
-        } else {
-            return 0;
-        }
+        return obj->flagStop();
     };
-}
-
-void HackRFTransferControl::setTransferParams(TransferParams setting) {
-    params = std::move(setting);
-}
-
-void HackRFTransferControl::check() {
-    if(!process) {
-        printf("callback no set");
-        exit(-1);
-    }
-
-    if(needProcessing) {
-        printf("Failed to Start RX. Stream already running.");
-        exit(-1);
-    }
 }
