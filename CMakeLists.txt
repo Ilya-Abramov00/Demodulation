@@ -15,20 +15,19 @@ if(UNITTEST)
 endif()
 
 add_subdirectory(libs/rtl-sdr)
-add_subdirectory(libs/Base)
-add_subdirectory(libs/dsp)
 add_subdirectory(libs/platform_SDR)
-add_subdirectory(libs/receiver)
+add_subdirectory(libs/hackrfAPI)
+add_subdirectory(libs/hackrf)
 
 file(GLOB SRC include/${PROJECT_NAME}/*.h)
 
 add_library(${PROJECT_NAME} INTERFACE ${SRC})
-target_link_libraries(${PROJECT_NAME} INTERFACE base receiver dsp)
+target_link_libraries(${PROJECT_NAME} INTERFACE )
 
 target_include_directories(${PROJECT_NAME} INTERFACE libs/receiver/include)
 target_include_directories(${PROJECT_NAME} INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 add_executable(Demodulator main.cpp)
-target_link_libraries(Demodulator PUBLIC receiver dsp base demodulation)
+target_link_libraries(Demodulator PUBLIC demodulation hackrf)
 
 include("unittest.cmake")

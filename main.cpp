@@ -1,14 +1,14 @@
-#include "base/complex.h"
-#include "base/moveFreq.h"
-#include "base/writeWAV.h"
-#include "demodulation/demod.h"
-#include "dsp/filter.h"
-#include "dsp/resample.h"
-#include "receiver/receiverfactory.h"
-#include "rtl-sdr.h"
+
+#include "hackrf/dev.h"
+#include "hackrf/receiver.h"
+#include "hackrf/transfercontrol.h"
 
 #include <cmath>
+#include <filesystem>
+#include <fstream>
 #include <iostream>
+#include <pthread.h>
+#include <unistd.h>
 
 struct InputParams {
     InputParams() = default;
@@ -18,8 +18,8 @@ struct InputParams {
 };
 std::ostream& operator<<(std::ostream& os, InputParams const& m) {
     return os << "\nВходные параметры \n"
-              << "Fc= " << m.Fc << std::endl
-              << "Fw= " << m.Fw << std::endl
+              << "Fc= " << m.Fc / 1'000'000 << " MГц" << std::endl
+              << "Fd= " << m.Fw / 1000 << " кГц" << std::endl
               << "time= " << m.time << std::endl;
 }
 uint32_t getNumArg(char* exArg) {
@@ -43,10 +43,10 @@ InputParams initialization(int argc, char** argv) {
             time = getNumArg(argv[3]);
             __attribute__((fallthrough));
         case 3:
-            Fw = getNumArg(argv[2]);
+            Fw = getNumArg(argv[2]) * 1'000;
             __attribute__((fallthrough));
         case 2:
-            Fc = getNumArg(argv[1]);
+            Fc = getNumArg(argv[1]) * 1'000'000;
             __attribute__((fallthrough));
         case 1:
             break;
@@ -54,7 +54,62 @@ InputParams initialization(int argc, char** argv) {
     return {Fc, Fw, time};
 }
 
-void processing(InputParams&& inputParams) { }
+volatile int should_stop = 0;
+
+pthread_cond_t cond   = PTHREAD_COND_INITIALIZER;
+pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+
+void flush_callback(hackrf_transfer* transfer) {
+    pthread_mutex_lock(&mutex);
+    pthread_cond_broadcast(&cond);
+    pthread_mutex_unlock(&mutex);
+}
+
+void processing(InputParams&& inputParams) {
+    std::cerr << inputParams;
+
+    HackRFDevice dev;
+    auto _dev = dev.getDev();
+
+    HackRFReceiver receiver(_dev);
+    receiver.setFrequency(inputParams.Fc);
+    receiver.setSampleRate(inputParams.Fw);
+    receiver.setGain(0);
+    receiver.setGainTxvga(0);
+    receiver.setAMP(true);
+    receiver.setBasebandFilterBandwidth(inputParams.Fw);
+
+    HackRFTransferControl transferControl(_dev);
+    transferControl.setCallBack([](void* data, uint32_t size) -> void {
+        std::cerr << "CALL" << std::endl;
+
+        std::string dir = "rawDumpsSignal";
+        std::filesystem::create_directory(dir);
+        auto filename = dir + "/stream:" + ".bin";
+        std::ofstream file(filename);
+        file.write((const char*)data, size);
+    });
+
+    TransferParams params;
+    params.typeTransaction = TypeTransaction::loop;
+
+    transferControl.setTransferParams(params);
+    transferControl.start();
+    sleep(1);
+    transferControl.stop();
+
+    // hackrf_set_tx_underrun_limit(device, 100000); // new-ish library function, not always available
+    // hackrf_enable_tx_flush(device, (hackrf_flush_cb_fn)flush_callback, NULL);
+    //  hackrf_start_rx(device, transfer_callback, NULL);
+
+    // pthread_mutex_lock(&mutex);
+    //  pthread_cond_wait(&cond, &mutex); // wait fo transfer to complete
+    // sleep(1);
+    // std::cerr << "stop player";
+    // hackrf_stop_tx(device);
+    // hackrf_close(device);
+    //  hackrf_exit();*/
+}
 
 int main(int argc, char** argv) {
     processing(initialization(argc, argv));
