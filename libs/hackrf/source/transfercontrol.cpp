@@ -31,8 +31,8 @@ void HackRFTransferControl::start() {
     check();
     startWaitMutex.lock();
     run();
-   // while(!needProcessing)
-        //startWaiter.wait(&std::unique_lock<std::mutex>(startWaitMutex, 100);
+    // while(!needProcessing)
+    // startWaiter.wait(&std::unique_lock<std::mutex>(startWaitMutex, 100);
 
     startWaitMutex.unlock();
 }
@@ -85,22 +85,11 @@ void HackRFTransferControl::run() {
 void HackRFTransferControl::stop() {
     std::cout << "HackRFOutputThread::stopWork" << std::endl;
     needProcessing = false;
-    //startWaiter.wait(startWaitMutex);
+    // startWaiter.wait(startWaitMutex);
 }
 
 void HackRFTransferControl::setCallBack(Handler f) {
     process = std::move(f);
-}
-
-void HackRFTransferControl::setTransferParams(TransferParams setting) {
-    params = std::move(setting);
-}
-
-void HackRFTransferControl::check() {
-    if(!process) {
-        printf("callback no set");
-        exit(-1);
-    }
 
     callback = [](hackrf_transfer* transfer) -> int {
         auto* obj = static_cast<HackRFTransferControl*>(transfer->rx_ctx);
@@ -112,6 +101,17 @@ void HackRFTransferControl::check() {
             return 0;
         }
     };
+}
+
+void HackRFTransferControl::setTransferParams(TransferParams setting) {
+    params = std::move(setting);
+}
+
+void HackRFTransferControl::check() {
+    if(!process) {
+        printf("callback no set");
+        exit(-1);
+    }
 
     if(needProcessing) {
         printf("Failed to Start RX. Stream already running.");
