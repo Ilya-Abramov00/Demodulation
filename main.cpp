@@ -68,7 +68,7 @@ void flush_callback(hackrf_transfer* transfer) {
 void processing(InputParams&& inputParams) {
     std::cerr << inputParams;
 
-    HackRFDevice dev;
+    HackRFDevice dev(0);
     auto _dev = dev.getDev();
 
     HackRFReceiver receiver(_dev);
@@ -95,10 +95,10 @@ void processing(InputParams&& inputParams) {
 
     transferControl.setTransferParams(params);
     transferControl.start();
-    sleep(1);
+    sleep(inputParams.time);
     transferControl.stop();
 
-    // hackrf_set_tx_underrun_limit(device, 100000); // new-ish library function, not always available
+
     // hackrf_enable_tx_flush(device, (hackrf_flush_cb_fn)flush_callback, NULL);
     //  hackrf_start_rx(device, transfer_callback, NULL);
 

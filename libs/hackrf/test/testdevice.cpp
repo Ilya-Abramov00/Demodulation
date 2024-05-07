@@ -13,7 +13,7 @@ public:
 };
 
 TEST_F(HACKRFDeviceTest, Device_creating) {
-    HackRFDevice dev;
+    HackRFDevice dev(0);
     auto _dev = dev.getDev();
 
     HackRFReceiver receiver(_dev);
@@ -35,10 +35,9 @@ TEST_F(HACKRFDeviceTest, Device_creating) {
     });
 
     TransferParams params;
-    params.typeTransaction = TypeTransaction::loop;
+    params.typeTransaction = TypeTransaction::single;
 
     transferControl.setTransferParams(params);
     transferControl.start();
-    sleep(1);
     transferControl.stop();
 }

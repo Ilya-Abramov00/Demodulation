@@ -1,16 +1,13 @@
 //
 // Created by gts on 07.05.2024.
 //
+#pragma once
+#include "hackrfAPI/hackrf.h"
 
-#ifndef TOOLS_H
-#define TOOLS_H
-
-
-
-class tools {
-
+class HackRFBandwidths {
+public:
+    static unsigned int getBandwidth(unsigned int bandwidth_index);
+    static unsigned int getBandwidthIndex(unsigned int bandwidth);
+    static const unsigned int m_nb_bw;
+    static const unsigned int m_bw_k[];
 };
-
-
-
-#endif //TOOLS_H

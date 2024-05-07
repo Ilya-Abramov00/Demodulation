@@ -6,6 +6,7 @@
 
 #include "hackrfAPI/hackrf.h"
 
+#include <list>
 class HackRFReceiver {
 public:
     explicit HackRFReceiver(hackrf_device* dev);
@@ -19,4 +20,6 @@ public:
 
 private:
     hackrf_device* dev;
+
+    uint32_t getBandwidth(unsigned int bandwidth);
 };

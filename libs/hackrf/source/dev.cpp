@@ -5,35 +5,61 @@
 
 #include <cstddef>
 #include <cstdio>
+#include <iostream>
 
-HackRFDevice::HackRFDevice() : dev(nullptr) {
-    open();
+HackRFDevice::HackRFDevice(int sequence) : dev(nullptr) {
+    auto rc = static_cast<hackrf_error>(hackrf_init());
+
+    if(rc != HACKRF_SUCCESS) {
+        std::cerr << "DeviceHackRF::open_hackrf: failed to initiate HackRF library " << hackrf_error_name(rc);
+    }
+
+    dev = open(sequence);
 }
 hackrf_device* HackRFDevice::getDev() {
     return dev;
 }
 
 HackRFDevice::~HackRFDevice() {
-    if(dev) {
-        this->close();
-    }
+    close();
 }
 
-bool HackRFDevice::open() {
-    hackrf_init();
+hackrf_device* HackRFDevice::open(int sequence) {
+    hackrf_device_list_t* hackrf_devices = hackrf_device_list();
 
-    int ret = hackrf_open(&dev);
-    if(ret != HACKRF_SUCCESS) {
-        printf("Failed to open HackRF device");
-        hackrf_close(dev);
-        return false;
+    if(hackrf_devices == nullptr) {
+        std::cerr << "No DeviceHackRF " << std::endl;
+        exit(-1);
     }
-    return true;
+
+    hackrf_device* hackrf_ptr;
+
+    auto rc = static_cast<hackrf_error>(hackrf_device_list_open(hackrf_devices, sequence, &hackrf_ptr));
+    hackrf_device_list_free(hackrf_devices);
+
+    if(rc == HACKRF_SUCCESS) {
+        return hackrf_ptr;
+    } else {
+        std::cerr << "DeviceHackRF::open_hackrf_from_sequence: error " << (int)rc << " " << hackrf_error_name(rc);
+        exit(-1);
+    }
 }
 
 void HackRFDevice::close() {
-    // hackrf_stop_tx(_dev);
+    // hackrf_stop_tx(dev);
     hackrf_close(dev);
     hackrf_exit();
     dev = nullptr;
+}
+hackrf_device* HackRFDevice::open(const char* const serial) {
+    hackrf_device* hackrf_ptr;
+
+    auto rc = static_cast<hackrf_error>(hackrf_open_by_serial(serial, &hackrf_ptr));
+
+    if(rc == HACKRF_SUCCESS) {
+        return hackrf_ptr;
+    } else {
+        std::cerr << "DeviceHackRF::open_hackrf: error " << (int)rc << " " << hackrf_error_name(rc);
+        exit(-1);
+    }
 }

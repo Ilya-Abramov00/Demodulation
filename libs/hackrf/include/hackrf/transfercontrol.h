@@ -1,10 +1,12 @@
 #pragma once
 
 #include "hackrfAPI/hackrf.h"
+#include "platform_SDR/transferparams.h"
 
 #include <atomic>
+#include <condition_variable>
 #include <functional>
-#include "platform_SDR/transferparams.h"
+#include <mutex>
 class HackRFTransferControl {
 public:
     using Handler = std::function<void(void* ptr, std::size_t sz)>;
@@ -17,6 +19,8 @@ public:
     void setCallBack(Handler f);
     void setTransferParams(TransferParams setting);
 private:
+    void check();
+    void run();
     hackrf_device* dev{nullptr};
 
     hackrf_sample_block_cb_fn callback;
@@ -25,4 +29,7 @@ private:
     std::atomic_bool needProcessing{false};
 
     TransferParams params;
+
+    std::mutex startWaitMutex;
+    std::condition_variable startWaiter;
 };
