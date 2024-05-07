@@ -8,7 +8,7 @@
 
 class HackRFDevice {
 public:
-    HackRFDevice(int sequence);
+    explicit HackRFDevice(size_t sequence);
 
     hackrf_device* getDev();
     ~HackRFDevice();
@@ -16,6 +16,5 @@ public:
 private:
     [[nodiscard]] hackrf_device* open(int sequence);
     [[nodiscard]] hackrf_device* open(const char* const serial);
-    void close();
     hackrf_device* dev;
 };

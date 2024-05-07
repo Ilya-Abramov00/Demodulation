@@ -11,7 +11,7 @@ HackRFTransferControl::HackRFTransferControl(hackrf_device* _dev) {
     if(!_dev) {
         printf("dev empty");
     }
-    auto rc = static_cast<hackrf_error>(hackrf_set_tx_underrun_limit(_dev, 2));
+    auto rc = static_cast<hackrf_error>(hackrf_set_rx_overrun_limit(_dev, 2));
 
     if(rc != HACKRF_SUCCESS) {
         std::cerr << __FUNCTION__ << " : error " << (int)rc << " " << hackrf_error_name(rc);
@@ -94,4 +94,7 @@ void HackRFTransferControl::setCallBack(Handler f) {
 
         return obj->flagStop();
     };
+}
+std::size_t HackRFTransferControl::getPacketSize() {
+    return hackrf_get_transfer_buffer_size(dev);
 }

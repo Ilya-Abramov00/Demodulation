@@ -5,21 +5,22 @@
 
 #include <iostream>
 
-HackRFDevice::HackRFDevice(int sequence) : dev(nullptr) {
+HackRFDevice::HackRFDevice(size_t sequence) : dev(nullptr) {
     auto rc = static_cast<hackrf_error>(hackrf_init());
 
     if(rc != HACKRF_SUCCESS) {
         std::cerr << "DeviceHackRF::open_hackrf: failed to initiate HackRF library " << hackrf_error_name(rc);
     }
 
-    dev = open(sequence);
+    dev = open(static_cast<int>(sequence));
 }
 hackrf_device* HackRFDevice::getDev() {
     return dev;
 }
 
 HackRFDevice::~HackRFDevice() {
-    close();
+    hackrf_close(dev);
+    hackrf_exit();
 }
 
 hackrf_device* HackRFDevice::open(int sequence) {
@@ -44,11 +45,6 @@ hackrf_device* HackRFDevice::open(int sequence) {
     }
 }
 
-void HackRFDevice::close() {
-    // hackrf_stop_tx(dev);
-    hackrf_close(dev);
-    hackrf_exit();
-}
 hackrf_device* HackRFDevice::open(const char* const serial) {
     hackrf_device* hackrf_ptr;
 

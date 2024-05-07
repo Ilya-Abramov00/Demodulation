@@ -13,13 +13,14 @@ public:
 
     void setFrequency(uint64_t freg);
     void setGain(float gain);
+    void setGainVga(float gain);
     void setGainTxvga(float gain);
-    void setAMP(bool enableamp);
-    void setSampleRate(uint32_t sample_rate);
-    void setBasebandFilterBandwidth(uint32_t hz);
+    void setAMPGain(bool enableamp);
+    void setSampleRate(uint64_t sample_rate);
+    void setBasebandFilterBandwidth(uint64_t hz);
 
 private:
     hackrf_device* dev;
 
-   static uint32_t getBandwidth(unsigned int bandwidth);
+    static uint32_t getBandwidth(unsigned int bandwidth);
 };

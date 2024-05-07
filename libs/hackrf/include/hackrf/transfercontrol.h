@@ -15,7 +15,7 @@ public:
 
     void start();
     void stop();
-
+    std::size_t getPacketSize();
     void setCallBack(Handler f);
     void setTransferParams(TransferParams setting);
 

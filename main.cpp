@@ -76,7 +76,7 @@ void processing(InputParams&& inputParams) {
     receiver.setSampleRate(inputParams.Fw);
     receiver.setGain(0);
     receiver.setGainTxvga(0);
-    receiver.setAMP(true);
+    receiver.setAMPGain(true);
     receiver.setBasebandFilterBandwidth(inputParams.Fw);
 
     HackRFTransferControl transferControl(_dev);

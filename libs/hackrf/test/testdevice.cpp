@@ -24,7 +24,7 @@ TEST_F(HACKRFDeviceTest, Device_creating) {
     receiver.setSampleRate(10e6);
     receiver.setGain(0);
     receiver.setGainTxvga(0);
-    receiver.setAMP(true);
+    receiver.setAMPGain(false);
     receiver.setBasebandFilterBandwidth(10e6);
 
     HackRFTransferControl transferControl(_dev);
