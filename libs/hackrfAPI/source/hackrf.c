@@ -26,10 +26,11 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
 #include <stdlib.h>
 #include <string.h>
 #ifndef _WIN32
-	#include <unistd.h>
-	#include <signal.h>
+        #include <unistd.h>
+        #include <signal.h>
 #endif
 #include <libusb-1.0/libusb.h>
+
 
 #ifdef _WIN32
 	/* Avoid redefinition of timespec from time.h (included by libusb.h) */
