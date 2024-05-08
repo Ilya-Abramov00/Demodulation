@@ -21,26 +21,28 @@ TEST_F(HACKRFDeviceTest, Device_creating) {
 
     HackRFReceiver receiver(_dev);
     receiver.setFrequency(10e6);
-    receiver.setSampleRate(10e6);
+    receiver.setSampleRate(2e6);
     receiver.setGain(0);
     receiver.setGainTxvga(0);
     receiver.setAMPGain(false);
-    receiver.setBasebandFilterBandwidth(10e6);
+    // receiver.setBasebandFilterBandwidth(10e6);
 
     HackRFTransferControl transferControl(_dev);
-    transferControl.setCallBack([](void* data, uint32_t size) -> void {
+    transferControl.setCallBack([&transferControl](void* data, uint32_t size) -> void {
         std::cerr << "CALL" << std::endl;
 
-        std::string dir = "rawDumpsSignal";
+        std::string dir = "DumpsSignalTest";
         auto filename   = dir + "/stream:" + ".bin";
         std::ofstream file(filename);
         file.write((const char*)data, size);
     });
 
     TransferParams params;
-    params.typeTransaction = TypeTransaction::single;
+    params.packetCount     = 5;
+    params.typeTransaction = TypeTransaction::loop;
 
     transferControl.setTransferParams(params);
     transferControl.start();
+    sleep(1);
     transferControl.stop();
 }

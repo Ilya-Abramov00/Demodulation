@@ -11,7 +11,6 @@ HackRFDevice::HackRFDevice(size_t sequence) : dev(nullptr) {
     if(rc != HACKRF_SUCCESS) {
         std::cerr << "DeviceHackRF::open_hackrf: failed to initiate HackRF library " << hackrf_error_name(rc);
     }
-
     dev = open(static_cast<int>(sequence));
 }
 hackrf_device* HackRFDevice::getDev() {
@@ -24,20 +23,21 @@ HackRFDevice::~HackRFDevice() {
 }
 
 hackrf_device* HackRFDevice::open(int sequence) {
-    hackrf_device_list_t* hackrf_devices = hackrf_device_list();
+    auto* hackrf_devices = hackrf_device_list();
 
     if(hackrf_devices == nullptr) {
         std::cerr << "fail";
         exit(-1);
     }
+    auto id = *hackrf_devices->usb_board_ids;
 
     hackrf_device* hackrf_ptr;
 
     auto rc = static_cast<hackrf_error>(hackrf_device_list_open(hackrf_devices, sequence, &hackrf_ptr));
-    std::cerr << "Counter " << hackrf_devices->devicecount << std::endl;
     hackrf_device_list_free(hackrf_devices);
 
     if(rc == HACKRF_SUCCESS) {
+        std::cout << "open " << hackrf_usb_board_id_name(id) << std::endl;
         return hackrf_ptr;
     } else {
         std::cerr << "DeviceHackRF::open: error " << (int)rc << " " << hackrf_error_name(rc);

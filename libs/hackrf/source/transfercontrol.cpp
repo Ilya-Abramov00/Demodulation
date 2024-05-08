@@ -39,7 +39,18 @@ void HackRFTransferControl::start() {
     }
 
     needProcessing = true;
-
+    if(params.typeTransaction == TypeTransaction::loop) {
+        thread = std::make_unique<std::thread>([this]() { run(); });
+    } else {
+        run();
+    }
+}
+HackRFTransferControl::~HackRFTransferControl() {
+    if(thread) {
+        thread->join();
+    }
+}
+void HackRFTransferControl::run() {
     auto rc = static_cast<hackrf_error>(hackrf_start_rx(dev, this->callback, this));
 
     if(rc != HACKRF_SUCCESS) {
@@ -47,11 +58,12 @@ void HackRFTransferControl::start() {
         hackrf_close(dev);
         exit(-1);
     }
+    std::cout << "started HackRF Rx" << std::endl;
 
     while((needProcessing) && (hackrf_is_streaming(dev) == HACKRF_TRUE)) {
         std::this_thread::sleep_for(std::chrono::milliseconds(200));
     }
-
+    std::cout << "Pre stop" << std::endl;
     if(hackrf_is_streaming(dev) == HACKRF_TRUE) {
         rc = static_cast<hackrf_error>(hackrf_stop_rx(dev));
 
@@ -70,7 +82,7 @@ bool HackRFTransferControl::flagStop() {
         return false;
     }
     counter++;
-    if(counter == packetCount) {
+    if(counter == params.packetCount) {
         return true;
     }
     return false;
@@ -95,6 +107,6 @@ void HackRFTransferControl::setCallBack(Handler f) {
         return obj->flagStop();
     };
 }
-std::size_t HackRFTransferControl::getPacketSize() {
+std::size_t HackRFTransferControl::getPacketSize() const {
     return hackrf_get_transfer_buffer_size(dev);
 }

@@ -64,7 +64,7 @@ void flush_callback(hackrf_transfer* transfer) {
     pthread_cond_broadcast(&cond);
     pthread_mutex_unlock(&mutex);
 }
-
+#include <thread>
 void processing(InputParams&& inputParams) {
     std::cerr << inputParams;
 
@@ -76,11 +76,11 @@ void processing(InputParams&& inputParams) {
     receiver.setSampleRate(inputParams.Fw);
     receiver.setGain(0);
     receiver.setGainTxvga(0);
-    receiver.setAMPGain(true);
-    receiver.setBasebandFilterBandwidth(inputParams.Fw);
+    receiver.setAMPGain(0);
+    receiver.setBasebandFilterBandwidth(inputParams.Fw * 0.5);
 
     HackRFTransferControl transferControl(_dev);
-    transferControl.setCallBack([](void* data, uint32_t size) -> void {
+    transferControl.setCallBack([&transferControl](void* data, uint32_t size) -> void {
         std::cerr << "CALL" << std::endl;
 
         std::string dir = "rawDumpsSignal";
@@ -91,24 +91,14 @@ void processing(InputParams&& inputParams) {
     });
 
     TransferParams params;
-    params.typeTransaction = TypeTransaction::loop;
+    params.typeTransaction = TypeTransaction::single;
 
     transferControl.setTransferParams(params);
     transferControl.start();
-    sleep(inputParams.time);
+
+    // std::this_thread::sleep_for(std::chrono::microseconds(500));
+
     transferControl.stop();
-
-
-    // hackrf_enable_tx_flush(device, (hackrf_flush_cb_fn)flush_callback, NULL);
-    //  hackrf_start_rx(device, transfer_callback, NULL);
-
-    // pthread_mutex_lock(&mutex);
-    //  pthread_cond_wait(&cond, &mutex); // wait fo transfer to complete
-    // sleep(1);
-    // std::cerr << "stop player";
-    // hackrf_stop_tx(device);
-    // hackrf_close(device);
-    //  hackrf_exit();*/
 }
 
 int main(int argc, char** argv) {
