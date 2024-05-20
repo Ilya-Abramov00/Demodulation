@@ -94,7 +94,7 @@ void HackRFReceiver::setAMPGain(bool enableamp) {
 void HackRFReceiver::setSampleRate(uint64_t sample_rate) {
     if((sample_rate < freqSampleHzMin) || (sample_rate > freqSampleHzMax)) {
         std::cerr << "Failed " << __FUNCTION__ << " " << sample_rate << " Hz" << std::endl;
-        exit(-1);
+     //   exit(-1);
     }
 
     if(sample_rate < freqSampleHzMinStable) {

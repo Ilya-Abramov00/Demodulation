@@ -33,11 +33,14 @@ private:
     hackrf_device* dev{nullptr};
 
     hackrf_sample_block_cb_fn callback{nullptr};
-    Handler process;
-
-    std::atomic_bool needProcessing{false};
-
     TransferParams params;
 
-    std::unique_ptr<std::thread> thread;
+    Handler handler;
+
+    bool needProcessing{false};
+    bool needStop{false};
+    bool stopComplite{false};
+
+    std::mutex mutex;
+    std::condition_variable cv;
 };

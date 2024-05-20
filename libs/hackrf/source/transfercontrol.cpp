@@ -11,7 +11,7 @@ HackRFTransferControl::HackRFTransferControl(hackrf_device* _dev) {
     if(!_dev) {
         printf("dev empty");
     }
-    auto rc = static_cast<hackrf_error>(hackrf_set_rx_overrun_limit(_dev, 2));
+    auto rc = static_cast<hackrf_error>(hackrf_set_rx_overrun_limit(_dev, 1));
 
     if(rc != HACKRF_SUCCESS) {
         std::cerr << __FUNCTION__ << " : error " << (int)rc << " " << hackrf_error_name(rc);
@@ -28,7 +28,7 @@ HackRFTransferControl::HackRFTransferControl(hackrf_device* _dev) {
     dev = _dev;
 }
 void HackRFTransferControl::start() {
-    if(!process) {
+    if(!callback) {
         printf("callback no set");
         exit(-1);
     }
@@ -39,17 +39,16 @@ void HackRFTransferControl::start() {
     }
 
     needProcessing = true;
-    if(params.typeTransaction == TypeTransaction::loop) {
-        thread = std::make_unique<std::thread>([this]() { run(); });
-    } else {
-        run();
+
+    auto rc = static_cast<hackrf_error>(hackrf_start_rx(dev, this->callback, this));
+
+    if(rc != HACKRF_SUCCESS) {
+        std::cerr << "Failed to start RX streaming: error " << (int)rc << " " << hackrf_error_name(rc);
+        exit(-1);
     }
+    std::cerr << "started HackRF Rx";
 }
-HackRFTransferControl::~HackRFTransferControl() {
-    if(thread) {
-        thread->join();
-    }
-}
+HackRFTransferControl::~HackRFTransferControl() { }
 void HackRFTransferControl::run() {
     auto rc = static_cast<hackrf_error>(hackrf_start_rx(dev, this->callback, this));
 
@@ -75,21 +74,38 @@ void HackRFTransferControl::run() {
     }
 }
 bool HackRFTransferControl::flagStop() {
-    if(!needProcessing) {
-        return true;
+    std::unique_lock<std::mutex> lk(mutex);
+    if((params.typeTransaction == TypeTransaction::single) && (++counter == params.packetCount)) {
+        stopComplite = true;
     }
-    if(params.typeTransaction == TypeTransaction::loop) {
-        return false;
+    else if(params.typeTransaction == TypeTransaction::loop && needStop) {
+        stopComplite = true;
     }
-    counter++;
-    if(counter == params.packetCount) {
-        return true;
+
+    lk.unlock();
+    if(stopComplite) {
+        cv.notify_one();
     }
-    return false;
+
+    return stopComplite;
 }
 
 void HackRFTransferControl::stop() {
+    std::unique_lock<std::mutex> lk(mutex);
+    needStop = true;
+    cv.wait(lk, [this] { return stopComplite; });
+
+    auto rc = static_cast<hackrf_error>(hackrf_stop_rx(dev));
+
+    if(rc != HACKRF_SUCCESS) {
+        std::cerr << "failed to stop HackRF RX: " << hackrf_error_name(rc);
+        exit(-1);
+    }
+
     needProcessing = false;
+    needStop       = false;
+    stopComplite   = false;
+    counter        = 0;
 }
 
 void HackRFTransferControl::setTransferParams(TransferParams setting) {
@@ -97,12 +113,11 @@ void HackRFTransferControl::setTransferParams(TransferParams setting) {
 }
 
 void HackRFTransferControl::setCallBack(Handler f) {
-    process = std::move(f);
-
+    handler  = std::move(f);
     callback = [](hackrf_transfer* transfer) -> int {
         auto* obj = static_cast<HackRFTransferControl*>(transfer->rx_ctx);
 
-        obj->process(transfer->buffer, transfer->valid_length);
+        obj->handler(transfer->buffer, transfer->valid_length);
 
         return obj->flagStop();
     };

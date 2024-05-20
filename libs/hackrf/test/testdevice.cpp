@@ -20,29 +20,29 @@ TEST_F(HACKRFDeviceTest, Device_creating) {
     auto _dev = dev.getDev();
 
     HackRFReceiver receiver(_dev);
-    receiver.setFrequency(10e6);
-    receiver.setSampleRate(2e6);
+    receiver.setFrequency(200e6);
+    receiver.setSampleRate(8e6);
     receiver.setGain(0);
     receiver.setGainTxvga(0);
     receiver.setAMPGain(false);
     // receiver.setBasebandFilterBandwidth(10e6);
 
     HackRFTransferControl transferControl(_dev);
-    transferControl.setCallBack([&transferControl](void* data, uint32_t size) -> void {
-        std::cerr << "CALL" << std::endl;
-
-        std::string dir = "DumpsSignalTest";
-        auto filename   = dir + "/stream:" + ".bin";
-        std::ofstream file(filename);
-        file.write((const char*)data, size);
-    });
+    auto zise = transferControl.getPacketSize();
+    transferControl.setCallBack([](void* data, uint32_t size) -> void { std::cerr << "CALLBACk"; });
 
     TransferParams params;
-    params.packetCount     = 5;
-    params.typeTransaction = TypeTransaction::loop;
+
+    params.packetCount     = 1024 * 1024 * 10 / zise;
+    params.typeTransaction = TypeTransaction::single;
 
     transferControl.setTransferParams(params);
+
+    auto start = std::chrono::steady_clock::now();
     transferControl.start();
-    sleep(1);
     transferControl.stop();
+    auto end = std::chrono::steady_clock::now();
+
+    std::cout << "разница по времени между callback "
+              << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << "ms" << std::endl;
 }
